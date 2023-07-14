@@ -22,3 +22,7 @@ npm run eject
       }
     }
   },
+
+
+  使用import styled from 'styled-components';
+  vscode中安装vscode-styled-components插件补全代码
