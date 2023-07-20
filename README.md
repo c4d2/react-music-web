@@ -26,3 +26,5 @@ npm run eject
 
   使用import styled from 'styled-components';
   vscode中安装vscode-styled-components插件补全代码
+
+  后端代码用的网易云音乐api
