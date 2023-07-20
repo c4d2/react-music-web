@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 
 import styled from 'styled-components';
 
@@ -11,7 +11,9 @@ import SkeletonH from '../components/SkeletonH';
 
 import PlayPauseButton from '../components/PlayPauseButton';
 import BodyHead from '../components/BodyHead';
-import SongList from '../components/SongList';
+// import SongList from '../components/SongList';
+
+const SongList = React.lazy(() => import('../components/SongList'))
 
 export default function PlaylistDetail() {
 
@@ -36,6 +38,8 @@ export default function PlaylistDetail() {
                 setAllplaylist(response.data.album)
                 setPicUrl(response.data.album.picUrl)
                 setPlaylist(response.data.songs);
+            }).then(() => {
+                setLoading(false);
             }).catch(e => {
                 console.error(e);
             }).finally(() => {
@@ -48,13 +52,12 @@ export default function PlaylistDetail() {
                 setAllplaylist(response.data.playlist);
                 setPicUrl(response.data.playlist.coverImgUrl);
                 setPlaylist(response.data.playlist.tracks);
+            }).then(() => {
+                setLoading(false);
             }).catch(e => {
                 console.error(e);
-            }).finally(() => {
-                setLoading(false);
             })
         }
-
     }, [id])
 
     return (
@@ -77,8 +80,8 @@ export default function PlaylistDetail() {
                             <div className='table'>
                                 <ul className='title'>
                                     <li style={{ width: '0.5vw' }}>#</li>
-                                    <li style={{ width: '25vw' }}>标题</li>
-                                    <li style={{ width: '35vw' }}>专辑</li>
+                                    <li style={{ width: '22vw' }}>标题</li>
+                                    <li style={{ width: '38vw' }}>专辑</li>
                                     <li style={{ width: '2vw' }}>时长</li>
                                 </ul>
                                 <div className='list'>
@@ -86,19 +89,21 @@ export default function PlaylistDetail() {
                                         playlist.map((item, index) => {
                                             return (
                                                 <div key={item.id}>
-                                                    <SongList
-                                                        setFocusId={setFocusId}
-                                                        focusId={focusId}
-                                                        id={item.id}
-                                                        index={index}
-                                                        picUrl={item.al.picUrl}
-                                                        songid={item.id}
-                                                        artistid={item.ar[0].id}
-                                                        songname={item.name}
-                                                        artistname={item.ar[0].name}
-                                                        albumname={item.al.name}
-                                                        dt={item.dt}
-                                                    />
+                                                    <Suspense fallback={<div>Loading...</div>}>
+                                                        <SongList
+                                                            setFocusId={setFocusId}
+                                                            focusId={focusId}
+                                                            id={item.id}
+                                                            index={index}
+                                                            picUrl={item.al.picUrl}
+                                                            songid={item.id}
+                                                            artistid={item.ar[0].id}
+                                                            songname={item.name}
+                                                            artistname={item.ar[0].name}
+                                                            albumname={item.al.name}
+                                                            dt={item.dt}
+                                                        />
+                                                    </Suspense>
                                                 </div>
                                             )
                                         })

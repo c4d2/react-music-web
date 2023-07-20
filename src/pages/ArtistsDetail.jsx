@@ -67,9 +67,9 @@ export default function ArtistsDetail() {
                 }
                 if (response3.data.code === 200) {
                     setSingerSong(response3.data);
-                    setLoading(false);
                 }
-
+            }).then(() => {
+                setLoading(false);
             }).catch(e => {
                 console.error(e);
             });

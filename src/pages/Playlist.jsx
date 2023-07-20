@@ -21,6 +21,7 @@ export default function Playlist() {
         list.then((response) => {
             console.log(response)
             SetPlaylist(response.data.playlists)
+        }).then(() => {
             setLoading(false);
         }).catch(e => {
             console.error(e);

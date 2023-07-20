@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 
 import styled from 'styled-components';
 
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import SkeletonH from '../components/SkeletonH';
 
 import { reqrecommendlist, reqhot } from '../api/playlist';
 
 // 组件
-import AlbumList from '../components/AlbumList';
+// import AlbumList from '../components/AlbumList';
+
+const AlbumList = React.lazy(() => import('../components/AlbumList'));
 
 export default function Home() {
     // 热歌分类表
@@ -43,20 +45,17 @@ export default function Home() {
                     li.push(responses[i].data.playlists.slice(0, 6));
                 }
                 setPlaylist(li);
-            })
-            .catch(e => {
+            }).then(() => {
+                setLoading(false);
+            }).catch(e => {
                 console.error(e);
-            }).finally(() => {
-                setTimeout(() => {
-                    setLoading(false); // 延迟一段时间后再设置加载状态为 false
-                }, 500);
-            });
+            })
     }, [list])
 
     return (
         <Container>
             {
-                loading ? <SkeletonH></SkeletonH> : <div>
+                 <div>
                     {
                         playlist && Array.isArray(playlist) && list ?
                             list.map((item, index) => {
@@ -76,12 +75,14 @@ export default function Home() {
                                                     playlist[index].slice(0, 5).map((subitem) => {
                                                         return (
                                                             <div className='playlist-item' key={subitem.id}>
-                                                                <AlbumList
-                                                                    playlistid={subitem.id}
-                                                                    url={subitem.coverImgUrl}
-                                                                    name={subitem.name.split('|')[0]}
-                                                                    description={subitem.description}
-                                                                />
+                                                                <Suspense fallback={<div>Loading...</div>}>
+                                                                    <AlbumList
+                                                                        playlistid={subitem.id}
+                                                                        url={subitem.coverImgUrl}
+                                                                        name={subitem.name.split('|')[0]}
+                                                                        description={subitem.description}
+                                                                    />
+                                                                </Suspense>
                                                             </div>
                                                         )
                                                     })
@@ -110,7 +111,8 @@ const Container = styled.div`
     padding-left: 20px;
     padding-right: 20px;
     margin-bottom: 1rem;
-    height: 40vh;
+    height: 41vh;
+    overflow: hidden  ;
     .head{
         display: flex;
         justify-content: space-between;
@@ -137,12 +139,14 @@ const Container = styled.div`
         }
     }
     .playlist{
-        display: grid;
-        grid-auto-flow: column;
-        grid-template-columns: repeat(5); /* 自适应列宽 */
-        grid-gap: 1vw;
+        width: 100%;
+        padding-top: 1rem;
         justify-content: start;
-        overflow: hidden;
+        display: flex;
+        grid-gap: 1rem;
+        .playlist-item{
+            width: 20%;
+        }
     }
   }
 `;

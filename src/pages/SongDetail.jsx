@@ -47,11 +47,9 @@ export default function SongDetail() {
         setSongtail(response1.data.songs[0]);
         setSimlist(response3.data.songs);
         setSimAlbum(response4.data.playlists);
-        setTimeout(() => {
-          setLoading(false);
-        }, 500);
       }
-      console.log(response4);
+    }).then(() => {
+      setLoading(false);
     }).catch(e => {
       console.error(e);
     })
@@ -201,10 +199,10 @@ const SimilarAlbum = styled.div`
     width: 100%;
     padding-top: 1rem;
     justify-content: start;
-    display: grid;
-    grid-auto-flow: column;
-    grid-template-columns: repeat(5); /* 自适应列宽 */
+    display: flex;
     grid-gap: 1vw;
-    
+    .playlist-item{
+      width: 20%;
+    }
   }
 `;

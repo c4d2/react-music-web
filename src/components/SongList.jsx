@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { AiOutlineHeart } from "react-icons/ai";
+
 import ChangeTime from '../global/timechange';
 
 import eventBus from '../store/event-bus';
@@ -80,6 +82,9 @@ export default function SongList(props) {
                     <li className='third'>
                         <span>{albumname}</span>
                     </li>
+                    <li className='heart'>
+                        <AiOutlineHeart className='heart-icon' />
+                    </li>
                     <li className='four'>
                         <span>{minutes}:{seconds}</span>
                     </li>
@@ -106,7 +111,7 @@ const Container = styled.div`
         list-style: none;
         display: grid;
         grid-auto-flow: column;
-        grid-gap: 2vw;
+        grid-gap: 1vw;
         justify-content: space-between;
         .first{
             width: 1vw;
@@ -143,6 +148,12 @@ const Container = styled.div`
         .third:hover{
             cursor: pointer;
             text-decoration: underline;
+        }
+        .heart{
+            width: 3vw;
+            .heart-icon:hover{
+                color: white;
+            }
         }
         .four{
             font-size: 13px;
